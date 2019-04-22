@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.HomeMainActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/container_ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dimen_40dp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/mnist_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="手写数字识别"
+                android:textSize="18sp"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:background="@drawable/home_btn_nor_down"/>
+
+            <Button
+                android:id="@+id/static_classifier_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="静态图像分类"
+                android:textSize="18sp"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:background="@drawable/home_btn_nor_down"/>
+
+            <Button
+                android:id="@+id/classifier_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="实时图像分类"
+                android:textSize="18sp"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:background="@drawable/home_btn_nor_down"/>
+
+            <Button
+                android:id="@+id/static_detector_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="静态图像检测"
+                android:textSize="18sp"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:background="@drawable/home_btn_nor_down"/>
+
+            <Button
+                android:id="@+id/detector_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="动态图像检测"
+                android:textSize="18sp"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:background="@drawable/home_btn_nor_down"/>
+
+            <Button
+                android:id="@+id/stylize_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="图像风格迁移"
+                android:textSize="18sp"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:background="@drawable/home_btn_nor_down"/>
+
+            <Button
+                android:id="@+id/speech_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="语音识别"
+                android:textSize="18sp"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:background="@drawable/home_btn_nor_down"/>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

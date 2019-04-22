@@ -1,0 +1,9 @@
+<resources>
+    <string name="home_app_name">libs_common</string>
+
+    <string name="common_loadingController_loading_message">加载中</string>
+    <string name="common_loadingController_network_error_message">加载失败，请检查网络连接~</string>
+    <string name="common_loadingController_error_message">加载失败，点击重试~</string>
+    <string name="common_loadingController_error_retry">重新加载</string>
+
+</resources>

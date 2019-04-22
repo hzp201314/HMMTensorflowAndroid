@@ -1,0 +1,130 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="home_AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/color_3f51b5</item>
+        <item name="colorPrimaryDark">@color/color_5e68fd</item>
+        <item name="colorAccent">@color/color_ff4081</item>
+    </style>
+
+    <style name="common_time_dialog" parent="android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+    <style name="custom_dialog_style" parent="android:Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item><!--除去title-->
+        <item name="android:backgroundDimEnabled">true</item><!--半透明-->
+        <item name="android:windowBackground">@color/transparent</item><!--除去背景色-->
+        <item name="android:radius">10dp</item>
+    </style>
+
+    <!--订单列表item-->
+    <style name="list_item">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">@dimen/dimen_13dp</item>
+        <item name="android:paddingBottom">@dimen/dimen_13dp</item>
+        <item name="android:paddingLeft">@dimen/dimen_15dp</item>
+        <item name="android:paddingRight">@dimen/dimen_14dp</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <!--订单列表item-left-textview-->
+    <style name="list_item_left_tv">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:paddingRight">@dimen/dimen_5dp</item>
+        <item name="android:textSize">@dimen/textsize_14sp</item>
+        <item name="android:textColor">@color/color_333333</item>
+    </style>
+
+    <!--订单列表item-right-textview-->
+    <style name="list_item_right_tv">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:gravity">right</item>
+        <item name="android:textSize">@dimen/textsize_14sp</item>
+        <item name="android:textColor">@color/color_969696</item>
+    </style>
+
+    <!--订单列表item-right-et-->
+    <style name="list_item_right_et">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center|right</item>
+        <item name="android:textSize">@dimen/textsize_14sp</item>
+        <item name="android:textColor">@color/color_5e68fd</item>
+        <item name="android:textColorHint">@color/color_cccccc</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:background">@null</item>
+    </style>
+
+
+    <!--订单列表item-left-textview-->
+    <style name="list_item2_left_tv">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:paddingRight">@dimen/dimen_5dp</item>
+        <item name="android:paddingLeft">@dimen/dimen_10dp</item>
+        <item name="android:textSize">@dimen/textsize_14sp</item>
+        <item name="android:textColor">@color/color_333333</item>
+    </style>
+
+    <!--订单列表item-right-textview-->
+    <style name="list_item2_right_tv">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:gravity">right</item>
+        <item name="android:paddingRight">@dimen/dimen_10dp</item>
+        <item name="android:textSize">@dimen/textsize_14sp</item>
+        <item name="android:textColor">@color/color_969696</item>
+    </style>
+
+    <!--订单列表item-right-textview-->
+    <style name="list_item3_right_tv">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:gravity">right</item>
+        <item name="android:paddingRight">@dimen/dimen_10dp</item>
+        <item name="android:textSize">@dimen/textsize_14sp</item>
+        <item name="android:textColor">@color/color_5e68fd</item>
+    </style>
+
+    <!--订单列表item-right-et-->
+    <style name="list_item2_right_et">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center|right</item>
+        <item name="android:textSize">@dimen/textsize_14sp</item>
+        <item name="android:textColor">@color/color_5e68fd</item>
+        <item name="android:paddingRight">@dimen/dimen_10dp</item>
+        <item name="android:textColorHint">@color/color_cccccc</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <!--订单列表item-right-textview 自提黑色-->
+    <style name="list_item_rightthree_tv">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:gravity">right</item>
+        <item name="android:textSize">@dimen/textsize_l</item>
+        <item name="android:textColor">@color/color_969696</item>
+    </style>
+
+
+</resources>

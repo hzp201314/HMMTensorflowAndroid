@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.nisco.hzp.mnistdemo">
+
+    <application>
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/mnist_AppTheme">
+        </activity>
+    </application>
+
+</manifest>
