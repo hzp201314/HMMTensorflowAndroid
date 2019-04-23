@@ -24,6 +24,7 @@ public class RouterUtil {
 
     //mnist模块
     public static final String Mnist_Main_Activity = "/mnist/activity/MainActivity";
+    public static final String Mnist2_Main_Activity = "/mnist2/activity/MainActivity";
 
     //tensorflow_demo模块
 

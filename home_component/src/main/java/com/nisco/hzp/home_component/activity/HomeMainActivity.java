@@ -56,9 +56,10 @@ public class HomeMainActivity extends BaseActivity implements View.OnClickListen
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.mnist_btn) {
-            ARouter.getInstance().build( RouterUtil.Mnist_Main_Activity).navigation(this, CommonConstants.MNIST);
+//            ARouter.getInstance().build( RouterUtil.Mnist_Main_Activity).navigation(this, CommonConstants.MNIST);
+            ARouter.getInstance().build( RouterUtil.Mnist2_Main_Activity).navigation(this, CommonConstants.MNIST);
         } else if (i == R.id.static_classifier_btn) {
-//            ARouter.getInstance().build( RouterUtil.TFlite_Static_Detector_Activity ).navigation( this,CommonConstants.MNIST );
+            ARouter.getInstance().build( RouterUtil.TFlite_Static_Detector_Activity ).navigation( this,CommonConstants.MNIST );
         } else if (i == R.id.classifier_btn) {
             ARouter.getInstance().build( RouterUtil.TF_Classifier_Activity).navigation(this, CommonConstants.MNIST);
         } else if (i == R.id.static_detector_btn) {

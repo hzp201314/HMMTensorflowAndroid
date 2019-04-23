@@ -2,7 +2,9 @@ package com.nisco.hzp.mnistdemo;
 
 import android.content.res.AssetManager;
 
-import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
+import com.nisco.hzp.contrib.android.TensorFlowInferenceInterface;
+
+//import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 import java.io.BufferedReader;
 import java.io.IOException;
