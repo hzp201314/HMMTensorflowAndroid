@@ -24,8 +24,11 @@ import java.util.concurrent.Executors;
 @Route( path = "/tensorflowlite/activity/staticDetectorActivity")
 public class MainActivity extends AppCompatActivity {
     private static final String MODEL_PATH = "mobilenet_quant_v1_224.tflite";
+//    private static final String MODEL_PATH = "mobilenet_v1_1.0_224_quant.tflite";
+//    private static final String MODEL_PATH = "mobilenet_v1.tflite";
     private static final boolean QUANT = true;
     private static final String LABEL_PATH = "labels.txt";
+//    private static final String LABEL_PATH = "labels_mobilenet_quant_v1_224.txt";
     private static final int INPUT_SIZE = 224;
 
     private Classifier classifier;

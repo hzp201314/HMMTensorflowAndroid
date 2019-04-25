@@ -40,6 +40,12 @@ android {
             }
         }
     }
+    //set no compress models
+    aaptOptions {
+        noCompress "tflite"
+        noCompress "pb"
+        noCompress "txt"
+    }
     resourcePrefix "home_"
 
 }

@@ -25,6 +25,10 @@ android {
     packagingOptions {
         exclude 'lib/armeabi-v7a/libtensorflow_inference.so'
     }
+    //set no compress models
+    aaptOptions {
+        noCompress "tflite"
+    }
 }
 
 dependencies {
@@ -46,9 +50,10 @@ dependencies {
 //        implementation project(':mnistdemo')
         implementation project(':mnistdemo2')
         implementation project(':tensorflow_demo')
-        implementation project(':staticdetector_tflite')
-//        implementation project(':mine_component')
-//        implementation project(':office_component')
+//        implementation project(':staticdetector_tflite')
+//        implementation project(':detectortflite')
+//        implementation project(':testdetector')
+        implementation project(':testtflite')
 //        implementation project(':message_component')
     }
 }

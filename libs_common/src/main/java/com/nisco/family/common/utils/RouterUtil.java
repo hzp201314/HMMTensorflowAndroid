@@ -27,13 +27,19 @@ public class RouterUtil {
     public static final String Mnist2_Main_Activity = "/mnist2/activity/MainActivity";
 
     //tensorflow_demo模块
-
     public static final String TF_Classifier_Activity = "/tensorflow/activity/ClassifierActivity";
     public static final String TF_Detector_Activity = "/tensorflow/activity/DetectorActivity";
     public static final String TF_Stylize_Activity = "/tensorflow/activity/StylizeActivity";
     public static final String TF_Speech_Activity = "/tensorflow/activity/SpeechActivity";
     public static final String TF_Static_Detector_Activity="/tensorflow/activity/StaticDetectorActivity";
-    //tensorflow_tflite模块
+
+
+    //staticdetector_tflite模块
     public static final String TFlite_Static_Detector_Activity="/tensorflowlite/activity/staticDetectorActivity";
+    //detectortflite模块
+    public static final String TFlite_Detector_Activity="/tensorflowlite2/activity/TFDetectorActivity";
+
+    //testtflite模块
+    public static final String TestTFlite_Main_Activity="/testtflite/activity/MainActivity";
 
 }
