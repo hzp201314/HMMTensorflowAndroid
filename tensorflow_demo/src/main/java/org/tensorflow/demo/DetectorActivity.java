@@ -27,6 +27,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
 import android.os.SystemClock;
+import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
 import android.widget.Toast;
@@ -155,6 +156,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       cropSize = MB_INPUT_SIZE;
     } else {
       try {
+        //TODO 用的这个模型
         detector = TensorFlowObjectDetectionAPIModel.create(
             getAssets(), TF_OD_API_MODEL_FILE, TF_OD_API_LABELS_FILE, TF_OD_API_INPUT_SIZE);
         cropSize = TF_OD_API_INPUT_SIZE;
@@ -168,25 +170,35 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       }
     }
 
+    //图片宽高
     previewWidth = size.getWidth();
     previewHeight = size.getHeight();
 
+    //    rotation=90   getScreenOrientation=0
+      Log.d( "111", "onPreviewSizeChosen: rotation="+rotation+";getScreenOrientation="+getScreenOrientation() );
+    //摄像头的方向
     sensorOrientation = rotation - getScreenOrientation();
     LOGGER.i("Camera orientation relative to screen canvas: %d", sensorOrientation);
 
+    //创建bitmap
     LOGGER.i("Initializing at size %dx%d", previewWidth, previewHeight);
     rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
     croppedBitmap = Bitmap.createBitmap(cropSize, cropSize, Config.ARGB_8888);
 
+    // 将照相机获取的原始图片，转换为cropSize=300*300的图片，用来作为模型预测的输入。
+    // 帧到裁剪转换
     frameToCropTransform =
         ImageUtils.getTransformationMatrix(
             previewWidth, previewHeight,
             cropSize, cropSize,
             sensorOrientation, MAINTAIN_ASPECT);
 
+    //裁剪到帧转换
     cropToFrameTransform = new Matrix();
+    // 帧到裁剪转换
     frameToCropTransform.invert(cropToFrameTransform);
 
+    //跟踪覆盖视图
     trackingOverlay = (OverlayView) findViewById( R.id.tracking_overlay);
     trackingOverlay.addCallback(
         new DrawCallback() {
@@ -206,6 +218,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             if (!isDebug()) {
               return;
             }
+            // 裁剪复制位图
             final Bitmap copy = cropCopyBitmap;
             if (copy == null) {
               return;
@@ -238,17 +251,25 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             lines.add("Rotation: " + sensorOrientation);
             lines.add("Inference time: " + lastProcessingTimeMs + "ms");
 
+            //边缘画线
             borderedText.drawLines(canvas, 10, canvas.getHeight() - 10, lines);
           }
         });
   }
 
+  //跟踪覆盖视图
   OverlayView trackingOverlay;
 
+    /**
+     * 利用训练模型来预测图片
+     * processImage()先做图片绘制方面的工作，将相机捕获的图片绘制出来。
+     * 然后利用分类器classifier来识别图片，获取图片为每个分类的概率。
+     * 最后将概率最大的前三个分类，展示在result区域上。
+     */
   @Override
   protected void processImage() {
     ++timestamp;
-    final long currTimestamp = timestamp;
+    final long currTimestamp = timestamp;//当前时间
     byte[] originalLuminance = getLuminance();
     tracker.onFrame(
         previewWidth,
@@ -259,14 +280,17 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         timestamp);
     trackingOverlay.postInvalidate();
 
+//    不需要互斥，因为此方法不可重入。
     // No mutex needed as this method is not reentrant.
     if (computingDetection) {
-      readyForNextImage();
+      readyForNextImage();//准备下次图片
       return;
     }
+//      计算机检测标识，true为检测完毕，进入下一次的检测
     computingDetection = true;
     LOGGER.i("Preparing image " + currTimestamp + " for detection in bg thread.");
 
+    //RGB帧位图
     rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
 
     if (luminanceCopy == null) {
@@ -275,13 +299,16 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     System.arraycopy(originalLuminance, 0, luminanceCopy, 0, originalLuminance.length);
     readyForNextImage();
 
+    //裁剪位图
     final Canvas canvas = new Canvas(croppedBitmap);
     canvas.drawBitmap(rgbFrameBitmap, frameToCropTransform, null);
+    //用于检查实际tf输入。
     // For examining the actual TF input.
     if (SAVE_PREVIEW_BITMAP) {
-      ImageUtils.saveBitmap(croppedBitmap);
+      ImageUtils.saveBitmap(croppedBitmap);//保存
     }
 
+    // 利用分类器classifier对图片进行预测分析，得到图片为每个分类的概率. 比较耗时，放在子线程中
     runInBackground(
         new Runnable() {
           @Override
@@ -289,9 +316,12 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             LOGGER.i("Running detection on image " + currTimestamp);
             final long startTime = SystemClock.uptimeMillis();
             //识别图像
+              // 1 classifier对图片进行识别，得到输入图片为每个分类的概率
+              //重点:分类器识别图片关键方法classifier.recognizeImage()
             final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
-            lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
+            lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;//检测时间
 
+              // 2 将得到的前三个最大概率的分类的名字及概率，反馈到app上。也就是results区域
             cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
             final Canvas canvas = new Canvas(cropCopyBitmap);
             final Paint paint = new Paint();
@@ -301,7 +331,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
             float minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
             switch (MODE) {
-              case TF_OD_API:
+              case TF_OD_API://此方法调用
                 minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
                 break;
               case MULTIBOX:
@@ -315,6 +345,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             final List<Classifier.Recognition> mappedRecognitions =
                 new LinkedList<Classifier.Recognition>();
 
+            //for循环画出所有的检测结果，并且封装到mappedRecognitions中
             for (final Classifier.Recognition result : results) {
               final RectF location = result.getLocation();
               if (location != null && result.getConfidence() >= minimumConfidence) {
@@ -329,6 +360,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             tracker.trackResults(mappedRecognitions, luminanceCopy, currTimestamp);
             trackingOverlay.postInvalidate();
 
+            // 3 请求重绘，并准备下一次的识别
             requestRender();
             computingDetection = false;
           }

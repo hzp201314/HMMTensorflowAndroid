@@ -55,6 +55,7 @@ public class StaticDetectorActivity extends Activity implements View.OnClickList
         initActivity();
     }
 
+
     private void initViews() {
         mButton = (Button) findViewById(R.id.button);
         mImageView = (ImageView) findViewById(R.id.imageView);
@@ -77,12 +78,12 @@ public class StaticDetectorActivity extends Activity implements View.OnClickList
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.button) {
+        if (i == R.id.button) {//选择图片
             Intent intent = new Intent(Intent.ACTION_PICK, null);
             intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
             startActivityForResult(intent, 2);
 
-        }else if(i==R.id.take_photo){
+        }else if(i==R.id.take_photo){//拍照
             File outputImage=new File( getExternalCacheDir(),"output_image.jpg" );
             try {
                 if(outputImage.exists()){
@@ -102,32 +103,12 @@ public class StaticDetectorActivity extends Activity implements View.OnClickList
             Intent intent=new Intent( "android.media.action.IMAGE_CAPTURE" );
             intent.putExtra( MediaStore.EXTRA_OUTPUT,imageUri );
             startActivityForResult( intent,TAKE_PHOTO );
-        }else if(i==R.id.select_photo){
+        }else if(i==R.id.select_photo){//选择相册图片
             if(ContextCompat.checkSelfPermission( this, Manifest.permission.WRITE_EXTERNAL_STORAGE )!= PackageManager.PERMISSION_GRANTED){
                 ActivityCompat.requestPermissions( this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},3);
             }else {
                 openAlbum();
             }
-
-//            File outputImage=new File( getExternalCacheDir(),"output_image.jpg" );
-//            try {
-//                if(outputImage.exists()){
-//                    outputImage.delete();
-//                }
-//                outputImage.createNewFile();
-//            }catch (IOException e){
-//                e.printStackTrace();
-//            }
-//            if(Build.VERSION.SDK_INT>=24){
-//                imageUri= FileProvider.getUriForFile( this,"com.example.cameraalbumtest.fileprovider",outputImage );
-//            }else {
-//                imageUri=Uri.fromFile( outputImage );
-//            }
-//
-//            //启动相机程序
-//            Intent intent=new Intent( "android.media.action.IMAGE_CAPTURE" );
-//            intent.putExtra( MediaStore.EXTRA_OUTPUT,imageUri );
-//            startActivityForResult( intent,SELECT_PHOTO );
         }
     }
 

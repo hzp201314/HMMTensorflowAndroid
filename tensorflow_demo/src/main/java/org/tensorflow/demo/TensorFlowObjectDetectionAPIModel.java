@@ -15,15 +15,15 @@ limitations under the License.
 
 package org.tensorflow.demo;
 
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.RectF;
-import android.os.Trace;
+import android.content.res.AssetManager;//assets文件夹下的文件不会被映射到R.java中，访问的时候需要AssetManager类
+import android.graphics.Bitmap;//导入安卓系统的图像处理类Bitmap ,以便进行图像剪切、旋转、缩放等操作，并可以指定格式保存图像文件
+import android.graphics.RectF;//这个类包含一个矩形的四个单精度浮点坐标。矩形通过上下左右4个边的坐标来表示一个矩形
+import android.os.Trace;// Android SDK中提供了`android.os.Trace#beginSection`和`android.os.Trace#endSection` 这两个接口，我们可以在代码中插入这些代码来分析某个特定的过程。
 
 import org.tensorflow.Graph;
 import org.tensorflow.Operation;
-import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
-import org.tensorflow.demo.env.Logger;
+import org.tensorflow.contrib.android.TensorFlowInferenceInterface;//tf针对安卓封装的inference类
+import org.tensorflow.demo.env.Logger;//定义的一个类用于LOG日志生成便于分析
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,23 +43,24 @@ public class TensorFlowObjectDetectionAPIModel implements Classifier {
   private static final Logger LOGGER = new Logger();
 
   // Only return this many results.
-  private static final int MAX_RESULTS = 100;
+  private static final int MAX_RESULTS = 100;//根据概率刷选出的前100个结果
 
   // Config values.
-  private String inputName;
-  private int inputSize;
+  private String inputName;//输入名称
+  private int inputSize;//输入尺寸
 
+  //预先分配buffer
   // Pre-allocated buffers.
   private Vector<String> labels = new Vector<String>();
-  private int[] intValues;
+  private int[] intValues;//整型数组（传入网络图像尺寸长*宽）
   private byte[] byteValues;
   private float[] outputLocations;
   private float[] outputScores;
   private float[] outputClasses;
   private float[] outputNumDetections;
-  private String[] outputNames;
+  private String[] outputNames;//输出名
 
-  private boolean logStats = false;
+  private boolean logStats = false;//log状态
 
   private TensorFlowInferenceInterface inferenceInterface;
 
@@ -71,10 +72,10 @@ public class TensorFlowObjectDetectionAPIModel implements Classifier {
    * @param labelFilename The filepath of label file for classes.
    */
   public static Classifier create(
-      final AssetManager assetManager,
-      final String modelFilename,
-      final String labelFilename,
-      final int inputSize) throws IOException {
+      final AssetManager assetManager,//资源管理类 对象实例
+      final String modelFilename,//模型名
+      final String labelFilename,//标签名
+      final int inputSize) throws IOException {//输入图片尺寸
     final TensorFlowObjectDetectionAPIModel d = new TensorFlowObjectDetectionAPIModel();
 
     InputStream labelsInput = null;
@@ -119,26 +120,39 @@ public class TensorFlowObjectDetectionAPIModel implements Classifier {
       throw new RuntimeException("Failed to find output Node 'detection_classes'");
     }
 
+    //框，分数，类别
     // Pre-allocate buffers.
     d.outputNames = new String[] {"detection_boxes", "detection_scores",
                                   "detection_classes", "num_detections"};
-    d.intValues = new int[d.inputSize * d.inputSize];
-    d.byteValues = new byte[d.inputSize * d.inputSize * 3];
-    d.outputScores = new float[MAX_RESULTS];
-    d.outputLocations = new float[MAX_RESULTS * 4];
-    d.outputClasses = new float[MAX_RESULTS];
-    d.outputNumDetections = new float[1];
-    return d;
+    d.intValues = new int[d.inputSize * d.inputSize];//输入图片长*宽
+    d.byteValues = new byte[d.inputSize * d.inputSize * 3];//长*宽*3
+    d.outputScores = new float[MAX_RESULTS];//分数
+    d.outputLocations = new float[MAX_RESULTS * 4];//输出位置
+    d.outputClasses = new float[MAX_RESULTS];//输出类别
+    d.outputNumDetections = new float[1];//输出数检测
+    return d;//返回对象
   }
 
   private TensorFlowObjectDetectionAPIModel() {}
 
+  /**
+   * 识别图片
+   * 步骤：
+   * 1.预处理输入图片，读取像素点，并将RGB三通道数值归一化. 归一化后分布于 -117 ~ 138
+   * 2.将输入数据填充到TensorFlow中，并feed数据给模型；feed用来填充输入图片
+   * 3.跑TensorFlow预测模型；run用来跑模型并得到结果
+   * 4.将tensorflow预测模型输出节点的输出值拷贝出来；fetch用来从TensorFlow内部获取输出节点的输出值
+   * 5.得到概率最大的前三个分类，并组装为Recognition对象
+   * @param bitmap
+   * @return
+   */
   @Override
   public List<Recognition> recognizeImage(final Bitmap bitmap) {
     // Log this method so that it can be analyzed with systrace.
     Trace.beginSection("recognizeImage");
 
     Trace.beginSection("preprocessBitmap");
+    // 1 预处理输入图片，读取像素点，并将RGB三通道数值归一化. 归一化后分布于 -117 ~ 138
     // Preprocess the image data to extract R, G and B bytes from int of form 0x00RRGGBB
     // on the provided parameters.
     bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
@@ -150,28 +164,39 @@ public class TensorFlowObjectDetectionAPIModel implements Classifier {
     }
     Trace.endSection(); // preprocessBitmap
 
+    // 2 将输入数据填充到TensorFlow中，并feed数据给模型
+    // inputName为输入节点
+    // floatValues为输入tensor的数据源，
+    // dims构成了tensor的shape, [batch_size, height, width, in_channel], 此处为[1, inputSize, inputSize, 3]
     // Copy the input data into TensorFlow.
     Trace.beginSection("feed");
     inferenceInterface.feed(inputName, byteValues, 1, inputSize, inputSize, 3);
     Trace.endSection();
 
+    // 3 跑TensorFlow预测模型
+    // outputNames为输出节点名， 通过session来run tensor
     // Run the inference call.
     Trace.beginSection("run");
     inferenceInterface.run(outputNames, logStats);
     Trace.endSection();
 
+    // 4 将tensorflow预测模型输出节点的输出值拷贝出来
+    // 找到输出节点outputName的tensor，并复制到outputs中。
+    // outputs为分类预测的结果，是一个一维向量，
+    // 每个值对应labels中一个分类的概率。
     // Copy the output Tensor back into the output array.
     Trace.beginSection("fetch");
-    outputLocations = new float[MAX_RESULTS * 4];
-    outputScores = new float[MAX_RESULTS];
-    outputClasses = new float[MAX_RESULTS];
-    outputNumDetections = new float[1];
+    outputLocations = new float[MAX_RESULTS * 4];//100*4
+    outputScores = new float[MAX_RESULTS];//分数
+    outputClasses = new float[MAX_RESULTS];//类别
+    outputNumDetections = new float[1];//识别
     inferenceInterface.fetch(outputNames[0], outputLocations);
     inferenceInterface.fetch(outputNames[1], outputScores);
     inferenceInterface.fetch(outputNames[2], outputClasses);
     inferenceInterface.fetch(outputNames[3], outputNumDetections);
     Trace.endSection();
 
+    // 5 得到概率最大的前三个分类，并组装为Recognition对象
     // Find the best detections.
     final PriorityQueue<Recognition> pq =
         new PriorityQueue<Recognition>(
@@ -184,8 +209,10 @@ public class TensorFlowObjectDetectionAPIModel implements Classifier {
               }
             });
 
+    //将它们缩放回输入大小
     // Scale them back to the input size.
     for (int i = 0; i < outputScores.length; ++i) {
+      //矩形的四个单精度浮点坐标。矩形通过上下左右4个边的坐标来表示一个矩形
       final RectF detection =
           new RectF(
               outputLocations[4 * i + 1] * inputSize,

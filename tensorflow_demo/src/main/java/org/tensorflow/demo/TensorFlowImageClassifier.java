@@ -62,6 +62,7 @@ public class TensorFlowImageClassifier implements Classifier {
 
   /**
    * Initializes a native TensorFlow session for classifying images.
+   * 构造物体识别分类器
    *
    * @param assetManager The asset manager to be used to load assets.
    * @param modelFilename The filepath of the model GraphDef protocol buffer.
@@ -82,19 +83,24 @@ public class TensorFlowImageClassifier implements Classifier {
       float imageStd,
       String inputName,
       String outputName) {
+    // 1 构造TensorFlowImageClassifier分类器，inputName和outputName分别为模型输入节点和输出节点的名字
     TensorFlowImageClassifier c = new TensorFlowImageClassifier();
     c.inputName = inputName;
     c.outputName = outputName;
 
+    // 2 读取label文件内容，将内容设置到出classifier的labels数组中
     // Read the label names into memory.
     // TODO(andrewharp): make this handle non-assets.
     String actualFilename = labelFilename.split("file:///android_asset/")[1];
     Log.i(TAG, "Reading labels from: " + actualFilename);
     BufferedReader br = null;
     try {
+      // 读取label文件流，label文件表征了可以识别出来的物体分类。我们预测的物体名称就是其中之一。
       br = new BufferedReader(new InputStreamReader(assetManager.open(actualFilename)));
+      // 将label存储到TensorFlowImageClassifier的labels数组中
       String line;
       while ((line = br.readLine()) != null) {
+        //读取不为空就添加到c.labels中
         c.labels.add(line);
       }
       br.close();
@@ -102,25 +108,30 @@ public class TensorFlowImageClassifier implements Classifier {
       throw new RuntimeException("Problem reading label file!" , e);
     }
 
+    // 3 读取model文件名，并设置到classifier的interface变量中。
     c.inferenceInterface = new TensorFlowInferenceInterface(assetManager, modelFilename);
 
+    // 4 利用输出节点名称，获取输出节点的shape，也就是最终分类的数目。
+    // 输出的shape为二维矩阵[N, NUM_CLASSES], N为batch size，也就是一批训练的图片个数。NUM_CLASSES为分类个数
     // The shape of the output is [N, NUM_CLASSES], where N is the batch size.
     final Operation operation = c.inferenceInterface.graphOperation(outputName);
     final int numClasses = (int) operation.output(0).shape().size(1);
     Log.i(TAG, "Read " + c.labels.size() + " labels, output layer size is " + numClasses);
 
+    // 5. 设置分类器的其他变量
     // Ideally, inputSize could have been retrieved from the shape of the input operation.  Alas,
     // the placeholder node for input in the graphdef typically used does not specify a shape, so it
     // must be passed in as a parameter.
-    c.inputSize = inputSize;
-    c.imageMean = imageMean;
-    c.imageStd = imageStd;
+    c.inputSize = inputSize; // 物体分类预测时输入图片的尺寸。也就是相机原始图片裁剪后的图片。默认为224*224
+    c.imageMean = imageMean; // 像素点RGB通道的平均值，默认为117。用来将0~255的数值做归一化的
+    c.imageStd = imageStd; // 像素点RGB通道的归一化比例，默认为1
 
+    // 6. 分配Buffer给输出变量
     // Pre-allocate buffers.
-    c.outputNames = new String[] {outputName};
-    c.intValues = new int[inputSize * inputSize];
-    c.floatValues = new float[inputSize * inputSize * 3];
-    c.outputs = new float[numClasses];
+    c.outputNames = new String[] {outputName};// 输出节点名字
+    c.intValues = new int[inputSize * inputSize];//图片像素，单通道维度数
+    c.floatValues = new float[inputSize * inputSize * 3];// RGB三通道
+    c.outputs = new float[numClasses];// 预测完的结果，也就是图片对应到每个分类的概率。我们取概率最大的前三个显示在app中
 
     return c;
   }

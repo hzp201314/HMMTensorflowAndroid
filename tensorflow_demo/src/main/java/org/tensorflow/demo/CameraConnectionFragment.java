@@ -62,6 +62,16 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 摄像头支持高级的图像处理功能时，构造CameraConnectionFragment实例
+ * 构造fragment时我们传入了两个比较重要的回调，
+ * 一个是cameraConnectionCallback，它在打开摄像头时回调，
+ * 一个是imageListener，它在摄像头拍摄到图片时回调。我们后面会详细分析。
+ * 先来看fragment的生命周期中的几个重要方法。
+ * onCreateView() onViewCreated()基本没做太多事情，
+ * onResume()中有个关键动作，它调用了openCamera()方法来打开摄像头。
+ * 我们来详细分析。
+ */
 public class CameraConnectionFragment extends Fragment {
   private static final Logger LOGGER = new Logger();
 
@@ -331,6 +341,9 @@ public class CameraConnectionFragment extends Fragment {
     super.onActivityCreated(savedInstanceState);
   }
 
+  /**
+   * onResume()中有个关键动作，它调用了openCamera()方法来打开摄像头。
+   */
   @Override
   public void onResume() {
     super.onResume();
@@ -341,6 +354,8 @@ public class CameraConnectionFragment extends Fragment {
     // a camera and start preview from here (otherwise, we wait until the surface is ready in
     // the SurfaceTextureListener).
     if (textureView.isAvailable()) {
+      // 屏幕没有处于关闭状态时，打开摄像头。
+      // textureView是fragment中展示摄像头实时捕获的图片的区域。
       openCamera(textureView.getWidth(), textureView.getHeight());
     } else {
       textureView.setSurfaceTextureListener(surfaceTextureListener);
@@ -360,6 +375,9 @@ public class CameraConnectionFragment extends Fragment {
 
   /**
    * Sets up member variables related to camera.
+   *  // 设置camera捕获图片的一些输出参数，
+   *  图片预览大小previewSize，摄像头方向sensorOrientation等。
+   *  最重要的是回调我们之前传入到fragment中的cameraConnectionCallback的onPreviewSizeChosen()方法。
    */
   private void setUpCameraOutputs() {
     final Activity activity = getActivity();
@@ -376,8 +394,10 @@ public class CameraConnectionFragment extends Fragment {
               Arrays.asList(map.getOutputSizes(ImageFormat.YUV_420_888)),
               new CompareSizesByArea());
 
+      //摄像头方向sensorOrientation
       sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
 
+      // 图片预览大小previewSize
       // Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
       // bus' bandwidth limitation, resulting in gorgeous previews but the storage of
       // garbage capture data.
@@ -405,15 +425,22 @@ public class CameraConnectionFragment extends Fragment {
       throw new RuntimeException(getString( R.string.camera_error));
     }
 
+    //回调我们之前传入到fragment中的cameraConnectionCallback的onPreviewSizeChosen()方法。
     cameraConnectionCallback.onPreviewSizeChosen(previewSize, sensorOrientation);
   }
 
   /**
+   * 打开摄像头
    * Opens the camera specified by {@link CameraConnectionFragment#cameraId}.
    */
   private void openCamera(final int width, final int height) {
+    // 设置camera捕获图片的一些输出参数，图片预览大小previewSize，摄像头方向sensorOrientation等。
+    // 最重要的是回调我们之前传入到fragment中的cameraConnectionCallback的onPreviewSizeChosen()方法。
     setUpCameraOutputs();
+    // 设置手机旋转后的适配，这儿不用关心
     configureTransform(width, height);
+
+    // 利用CameraManager这个Android底层类，打开摄像头。这儿也不是我们关注的重点
     final Activity activity = getActivity();
     final CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
     try {

@@ -75,10 +75,12 @@ public abstract class CameraActivity extends Activity
   protected void onCreate(final Bundle savedInstanceState) {
     LOGGER.d("onCreate " + this);
     super.onCreate(null);
+    // 设置window layout，以及设置contentView
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
     setContentView( R.layout.activity_camera);
 
+    // 有相机权限，则进行设置相机实时图片预览区域的Fragment，否则，请求权限，让用户确定
     if (hasPermission()) {
       setFragment();
     } else {
@@ -151,27 +153,33 @@ public abstract class CameraActivity extends Activity
 
   /**
    * Callback for Camera2 API
+   * 当相机预览图片准备好时，Android系统的cameraDevice会回调之前注册的OnImageAvailableListener
    */
   @Override
   public void onImageAvailable(final ImageReader reader) {
+    // onPreviewSizeChosen被回调后，设置了previewWidth和previewHeight，才处理预览图片
     //We need wait until we have some size from onPreviewSizeChosen
     if (previewWidth == 0 || previewHeight == 0) {
       return;
     }
+    // 构造图片输出矩阵
     if (rgbBytes == null) {
       rgbBytes = new int[previewWidth * previewHeight];
     }
     try {
+      // 获取图片
       final Image image = reader.acquireLatestImage();
 
       if (image == null) {
         return;
       }
 
+      // 正在处理图片时，则直接返回
       if (isProcessingFrame) {
         image.close();
         return;
       }
+      // yuv转换为rgb格式
       isProcessingFrame = true;
       Trace.beginSection("imageAvailable");
       final Plane[] planes = image.getPlanes();
@@ -206,6 +214,7 @@ public abstract class CameraActivity extends Activity
             }
           };
 
+      // 这儿是关键，利用训练模型来预测图片，后面详细分析
       processImage();
     } catch (final Exception e) {
       LOGGER.e(e, "Exception!");
@@ -346,21 +355,35 @@ public abstract class CameraActivity extends Activity
     return null;
   }
 
+  /**
+   *设置相机实时图片预览区域的Fragment
+   */
   protected void setFragment() {
+    // 获取相机，通过CameraService选择正确的摄像头。本app中不使用前置摄像头
     String cameraId = chooseCamera();
 
+    // 构建相机的Fragment.注册Camera.PreviewCallback，android.hardware.Camera的callback
     Fragment fragment;
     if (useCamera2API) {
+      // 摄像头支持高级的图像处理功能时，构造CameraConnectionFragment实例。后面详细分析
       CameraConnectionFragment camera2Fragment =
           CameraConnectionFragment.newInstance(
               new CameraConnectionFragment.ConnectionCallback() {
+                // 选择了预览图片的大小时的回调
                 @Override
                 public void onPreviewSizeChosen(final Size size, final int rotation) {
+                  // 获取相机捕获的图片的宽高，以及相机旋转方向。
                   previewHeight = size.getHeight();
                   previewWidth = size.getWidth();
+                  // 相机捕获的图片的大小确定后，需要对捕获图片做裁剪等预操作。
+                  // 这将回调到ClassifierActivity中。我们后面重点分析。
                   CameraActivity.this.onPreviewSizeChosen(size, rotation);
                 }
               },
+                  //第二个回调imageListener，也就是onImageAvailableListener，
+                  // 它在摄像头被打开后，捕获的图片available时由系统回调到
+                  //摄像头打开后，会create一个新的预览session，
+                  // 其中就会设置OnImageAvailableListener到CameraDevice中
               this,
               getLayoutId(),
               getDesiredPreviewFrameSize());
@@ -368,10 +391,12 @@ public abstract class CameraActivity extends Activity
       camera2Fragment.setCamera(cameraId);
       fragment = camera2Fragment;
     } else {
+      // 摄像头只支持部分功能时，fallback到传统的API
       fragment =
           new LegacyCameraConnectionFragment(this, getLayoutId(), getDesiredPreviewFrameSize());
     }
 
+    // fragment填充到container位置处
     getFragmentManager()
         .beginTransaction()
         .replace( R.id.container, fragment)
