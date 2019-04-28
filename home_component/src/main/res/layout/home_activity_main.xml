@@ -4,8 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activity.HomeMainActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dip"
+        android:background="@color/header_color">
 
+        <TextView
+            android:id="@+id/title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="标题"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -53,6 +69,7 @@
                 android:background="@drawable/home_btn_nor_down"/>
 
             <Button
+                android:visibility="gone"
                 android:id="@+id/static_detector_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -92,7 +109,7 @@
                 android:id="@+id/speech_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="语音识别"
+                android:text="单词语音识别"
                 android:textSize="18sp"
                 android:padding="5dp"
                 android:layout_margin="10dp"
