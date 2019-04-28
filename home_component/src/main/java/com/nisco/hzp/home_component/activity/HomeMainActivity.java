@@ -65,6 +65,7 @@ public class HomeMainActivity extends BaseActivity implements View.OnClickListen
         } else if (i == R.id.classifier_btn) {
             ARouter.getInstance().build( RouterUtil.TF_Classifier_Activity).navigation(this, CommonConstants.MNIST);
         } else if (i == R.id.static_detector_btn) {//相册图像识别
+            //TODO 已注销
 //            ARouter.getInstance().build( RouterUtil.TFlite_Detector ).navigation( this,CommonConstants.MNIST );
 //            ARouter.getInstance().build( RouterUtil.TFlite_Detector_Activity ).navigation( this,CommonConstants.MNIST );
             ARouter.getInstance().build( RouterUtil.TF_Static_Detector_Activity ).navigation( this,CommonConstants.MNIST );
