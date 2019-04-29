@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="标题"
+            android:text="Miss.Hu's Graduation Project"
             android:textColor="@color/white"
             android:textSize="18sp" />
 

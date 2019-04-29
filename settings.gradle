@@ -1,2 +1,2 @@
-include ':app', ':libs_common',':library_pulltorefresh', ':home_component', ':mnistdemo', ':tensorflow_demo', ':staticdetector_tflite', ':mnistdemo2', ':detectortflite', ':testtflite'
+include ':app', ':libs_common',':library_pulltorefresh', ':home_component', ':tensorflow_demo', ':mnistdemo2',  ':testtflite'
 
