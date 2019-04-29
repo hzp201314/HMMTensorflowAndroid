@@ -23,11 +23,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true" />
+    <!--调试覆盖视图-->
     <org.tensorflow.demo.OverlayView
         android:id="@+id/debug_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true" />
+    <!--分类结果视图-->
     <org.tensorflow.demo.RecognitionScoreView
         android:id="@+id/results"
         android:layout_alignBottom="@id/debug_overlay"

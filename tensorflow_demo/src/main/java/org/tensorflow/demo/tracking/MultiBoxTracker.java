@@ -41,6 +41,7 @@ import java.util.Queue;
 /**
  * A tracker wrapping ObjectTracker that also handles non-max suppression and matching existing
  * objects to new detections.
+ * 一个包含对象跟踪器的跟踪器，它还处理非最大值抑制并将现有对象与新检测匹配。
  */
 public class MultiBoxTracker {
   private final Logger logger = new Logger();

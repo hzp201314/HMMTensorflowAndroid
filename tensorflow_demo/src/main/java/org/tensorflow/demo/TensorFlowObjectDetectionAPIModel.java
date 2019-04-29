@@ -149,14 +149,46 @@ public class TensorFlowObjectDetectionAPIModel implements Classifier {
   @Override
   public List<Recognition> recognizeImage(final Bitmap bitmap) {
     // Log this method so that it can be analyzed with systrace.
+    //跟踪：recognizeImage
     Trace.beginSection("recognizeImage");
 
+    //跟踪：preprocessBitmap
     Trace.beginSection("preprocessBitmap");
     // 1 预处理输入图片，读取像素点，并将RGB三通道数值归一化. 归一化后分布于 -117 ~ 138
     // Preprocess the image data to extract R, G and B bytes from int of form 0x00RRGGBB
     // on the provided parameters.
+// 以像素为单位返回位图中数据的副本。
+// 每个值都是表示颜色的压缩int。stride参数允许调用者允许行之间返回的像素数组中存在间隙。
+// 对于正常的压缩结果，只需传递跨距值的宽度。
+    //intValues：：接收位图颜色的数组 The array to receive the bitmap's colors
+    //偏移：写入像素的第一个索引[]
+    //步幅：行与行之间要跳过的以像素为单位的条目数（必须大于等于位图的宽度）。可以是负数。
+    //x：从位图中读取的第一个像素的x坐标
+    //Y：从位图中读取的第一个像素的Y坐标
+    //宽度：从每行读取的像素数
+    //高度:要读取的行数
+    /**
+     * Returns in pixels[] a copy of the data in the bitmap. Each value is
+     * a packed int representing a {@link Color}. The stride parameter allows
+     * the caller to allow for gaps in the returned pixels array between
+     * rows. For normal packed results, just pass width for the stride value.
+     * The returned colors are non-premultiplied ARGB values in the
+     * {@link ColorSpace.Named#SRGB sRGB} color space.
+     *
+     * @param pixels   The array to receive the bitmap's colors
+     * @param offset   The first index to write into pixels[]
+     * @param stride   The number of entries in pixels[] to skip between
+     *                 rows (must be >= bitmap's width). Can be negative.
+     * @param x        The x coordinate of the first pixel to read from
+     *                 the bitmap
+     * @param y        The y coordinate of the first pixel to read from
+     *                 the bitmap
+     * @param width    The number of pixels to read from each row
+     * @param height   The number of rows to read
+     */
     bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
 
+    //转换 int[]转byte[] 将int数组转换为占三个字节的byte数组，本方法适用于(高位在前，低位在后)的顺序。
     for (int i = 0; i < intValues.length; ++i) {
       byteValues[i * 3 + 2] = (byte) (intValues[i] & 0xFF);
       byteValues[i * 3 + 1] = (byte) ((intValues[i] >> 8) & 0xFF);
@@ -220,14 +252,17 @@ public class TensorFlowObjectDetectionAPIModel implements Classifier {
               outputLocations[4 * i + 3] * inputSize,
               outputLocations[4 * i + 2] * inputSize);
       pq.add(
+              //封装： id，标签类别，精确度分数，矩形区域
           new Recognition("" + i, labels.get((int) outputClasses[i]), outputScores[i], detection));
     }
 
+    //将Recognition实例放入数组列表recognitions中
     final ArrayList<Recognition> recognitions = new ArrayList<Recognition>();
     for (int i = 0; i < Math.min(pq.size(), MAX_RESULTS); ++i) {
       recognitions.add(pq.poll());
     }
     Trace.endSection(); // "recognizeImage"
+    //返回recognitions，识别检测结束
     return recognitions;
   }
 

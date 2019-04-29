@@ -107,10 +107,11 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
 
   /**
    *  CameraAcitivty中new的CameraConnnectionFragment实例中的第一个回调cameraConnectCallback
-   *  CameraConnnectionFragment的onResume()方法中有一个openCamera()方法打开摄像头，
-   *  openCamera()方法中有一个设置捕获相机输出方法setupCameraOutputs()方法
-   *  setupCameraOutputs()方法获取的预览图片的大小perviewSize，摄像头的方向sensorientation，
-   *  更重要是回调了cameraConnectCallback中的onPreviewSizeChosen()方法，
+   *  CameraConnnectionFragment的onResume()
+   *  --->openCamera()方法打开摄像头
+   *  --->设置捕获相机输出方法setupCameraOutputs()方法
+   *  --->获取的预览图片的大小perviewSize，摄像头的方向sensorientation，
+   *      更重要是回调了cameraConnectCallback中的onPreviewSizeChosen()方法，
    *  onPreviewSizeChosen()方法中包含perviewSize(图片大小)和sensorientation(摄像头方向)
    *  onPreviewSizeChosen(size,rotation)方法会回调到ClassifierActivity中
    *  图片预览展现出来时回调。主要是构造分类器classifier，和裁剪输入图片为224*224
@@ -123,8 +124,10 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
    */
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
+  //    这个方法的作用是 把Android系统中的非标准度量尺寸转变为标准度量尺寸 (Android系统中的标准尺寸是px, 即像素)
     final float textSizePx = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
+    //边框文本框
     borderedText = new BorderedText(textSizePx);
     borderedText.setTypeface(Typeface.MONOSPACE);
 
@@ -145,15 +148,19 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
     previewWidth = size.getWidth();
     previewHeight = size.getHeight();
 
+    //获取窗口屏幕的默认信息
     final Display display = getWindowManager().getDefaultDisplay();
-    final int screenOrientation = display.getRotation();
+    final int screenOrientation = display.getRotation();//屏幕方向
 
     LOGGER.i("Sensor orientation: %d, Screen orientation: %d", rotation, screenOrientation);
 
+    //方向
     sensorOrientation = rotation + screenOrientation;
 
     LOGGER.i("Initializing at size %dx%d", previewWidth, previewHeight);
+    //新建rgb帧位图
     rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
+    //新建裁剪位图
     croppedBitmap = Bitmap.createBitmap(INPUT_SIZE, INPUT_SIZE, Config.ARGB_8888);
 
     // 将照相机获取的原始图片，转换为224*224的图片，用来作为模型预测的输入。
@@ -162,13 +169,18 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
         INPUT_SIZE, INPUT_SIZE,
         sensorOrientation, MAINTAIN_ASPECT);
 
+    //新建裁剪到帧转换矩阵
     cropToFrameTransform = new Matrix();
+    //帧到裁剪转换矩阵 转置裁剪到帧转换矩阵
     frameToCropTransform.invert(cropToFrameTransform);
 
-    addCallback(
+    //添加回调
+    /*调试debug视图*/
+    addCallback(//绘制回调
         new DrawCallback() {
           @Override
           public void drawCallback(final Canvas canvas) {
+            //渲染调试 画布
             renderDebug(canvas);
           }
         });
@@ -182,9 +194,15 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
    */
   @Override
   protected void processImage() {
-    // 图片的绘制等，不是模型预测的重点，不分析了
+    // 将位图中的像素替换为getRgbBytes()数组中的颜色。
     rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
+    //用croppedBitmap裁剪位图构造画布
     final Canvas canvas = new Canvas(croppedBitmap);
+    //使用指定的矩阵绘制位图。
+    //参数
+    //rgbFrameBitmap：位图要绘制的位图
+    //frameToCropTransform：矩阵绘制位图时用于转换位图的矩阵
+    //null：可能为空。用于绘制位图的绘制
     canvas.drawBitmap(rgbFrameBitmap, frameToCropTransform, null);
 
     // For examining the actual TF input.
@@ -192,18 +210,19 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
       ImageUtils.saveBitmap(croppedBitmap);
     }
 
-    // 利用分类器classifier对图片进行预测分析，得到图片为每个分类的概率. 比较耗时，放在子线程中
+    // 利用分类器classifier对图片进行预测分析，得到图片为每个分类的概率. 比较耗时，放在子线程中，在后台运行
     runInBackground(
         new Runnable() {
           @Override
           public void run() {
-            final long startTime = SystemClock.uptimeMillis();
+            final long startTime = SystemClock.uptimeMillis();//开始时间
             // 1 classifier对图片进行识别，得到输入图片为每个分类的概率
             //重点:分类器识别图片关键方法classifier.recognizeImage()
             final List<Classifier.Recognition> results = classifier.recognizeImage(croppedBitmap);
-            lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
+            lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;//分类耗费时间
             LOGGER.i("Detect: %s", results);
             // 2 将得到的前三个最大概率的分类的名字及概率，反馈到app上。也就是results区域
+            //创建裁剪复制位图
             cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
             if (resultsView == null) {
               resultsView = (ResultsView) findViewById( R.id.results);
@@ -222,35 +241,44 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
   }
 
   private void renderDebug(final Canvas canvas) {
-    if (!isDebug()) {
+    //是否调试模式
+    if (!isDebug()) {//不是就return
       return;
     }
+
+    //新建一个裁剪复制位图
     final Bitmap copy = cropCopyBitmap;
     if (copy != null) {
+      //新建一个矩阵
       final Matrix matrix = new Matrix();
+      //scale缩放比例因子
       final float scaleFactor = 2;
+      //缩放
       matrix.postScale(scaleFactor, scaleFactor);
+      //平移
       matrix.postTranslate(
           canvas.getWidth() - copy.getWidth() * scaleFactor,
           canvas.getHeight() - copy.getHeight() * scaleFactor);
+      //绘制位图
       canvas.drawBitmap(copy, matrix, new Paint());
 
+      //矢量线集合
       final Vector<String> lines = new Vector<String>();
       if (classifier != null) {
         String statString = classifier.getStatString();
         String[] statLines = statString.split("\n");
         for (String line : statLines) {
-          lines.add(line);
+          lines.add(line);//线
         }
       }
 
-      lines.add("Frame: " + previewWidth + "x" + previewHeight);
-      lines.add("Crop: " + copy.getWidth() + "x" + copy.getHeight());
-      lines.add("View: " + canvas.getWidth() + "x" + canvas.getHeight());
-      lines.add("Rotation: " + sensorOrientation);
-      lines.add("Inference time: " + lastProcessingTimeMs + "ms");
+      lines.add("Frame: " + previewWidth + "x" + previewHeight);//帧图像宽高
+      lines.add("Crop: " + copy.getWidth() + "x" + copy.getHeight());//复制框的宽高
+      lines.add("View: " + canvas.getWidth() + "x" + canvas.getHeight());//画布宽高
+      lines.add("Rotation: " + sensorOrientation);//方向
+      lines.add("Inference time: " + lastProcessingTimeMs + "ms");//时间
 
-      borderedText.drawLines(canvas, 10, canvas.getHeight() - 10, lines);
+      borderedText.drawLines(canvas, 10, canvas.getHeight() - 10, lines);//绘制边框文本图像
     }
   }
 }

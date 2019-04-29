@@ -436,8 +436,15 @@ public abstract class CameraActivity extends Activity
 
   public void onSetDebug(final boolean debug) {}
 
+  /**
+   * 重写按键
+   * @param keyCode
+   * @param event
+   * @return
+   */
   @Override
   public boolean onKeyDown(final int keyCode, final KeyEvent event) {
+    //如果按下音量＋或者音量-，就开启或者关闭debug模式
     if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
       debug = !debug;
       requestRender();
