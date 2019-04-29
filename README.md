@@ -4,6 +4,7 @@
 [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg?style=flat-square)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
 ## 功能简介
 1. 使用`expert-graph`模型实现手写数字识别
+![123](img/白天场景.jpg "456")
 2. 使用`mobilenet_v1`和`mobilenet_v2`模型实现相册片的图像分类
 3. 使用`tensorflow_inception_graph`模型实现实时图像分类
 4. 使用`graph-tiny-yolo-voc`模型实现实时图像目标检测
