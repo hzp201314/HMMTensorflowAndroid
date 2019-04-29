@@ -13,25 +13,26 @@
 
 ### 1.APP主界面
 
-![APP主界面](image/APPMainActivity.png "APP主界面")
+<img src="image/APPMainActivity.png" width = "500"  div align=left />
+<p align=left>图1 APP主界面效果图<p>
 
 ### 2.手写数字识别效果图
 <table>
     <tr>
-        <td ><center><img src="image/mnist_0.png" >图1 手写数字0</center></td>
-        <td ><center><img src="image/mnist_1.png" >图2 手写数字1</center></td>
-		<td ><center><img src="image/mnist_2.png" >图3 手写数字2</center></td>
-		<td ><center><img src="image/mnist_3.png" >图4 手写数字3</center></td>		
+        <td ><center><img src="image/mnist_0.png" >图2 手写数字0</center></td>
+        <td ><center><img src="image/mnist_1.png" >图3 手写数字1</center></td>
+		<td ><center><img src="image/mnist_2.png" >图4 手写数字2</center></td>
+		<td ><center><img src="image/mnist_3.png" >图5 手写数字3</center></td>		
     </tr>
 	<tr>
-        <td ><center><img src="image/mnist_4.png" >图5 手写数字4</center></td>
-        <td ><center><img src="image/mnist_5.png" >图6 手写数字5</center></td>
-		<td ><center><img src="image/mnist_6.png" >图7 手写数字6</center></td>
-		<td ><center><img src="image/mnist_7.png" >图8 手写数字7</center></td>
+        <td ><center><img src="image/mnist_4.png" >图6 手写数字4</center></td>
+        <td ><center><img src="image/mnist_5.png" >图7 手写数字5</center></td>
+		<td ><center><img src="image/mnist_6.png" >图8 手写数字6</center></td>
+		<td ><center><img src="image/mnist_7.png" >图9 手写数字7</center></td>
     </tr>
 	<tr>
-        <td ><center><img src="image/mnist_8.png" >图9 手写数字8</center></td>
-		<td ><center><img src="image/mnist_9.png" >图10 手写数字9</center></td>
+        <td ><center><img src="image/mnist_8.png" >图10 手写数字8</center></td>
+		<td ><center><img src="image/mnist_9.png" >图11 手写数字9</center></td>
 		<td ><center><img src="" ></center></td>
 		<td ><center><img src="" ></center></td>    
     </tr>
@@ -40,38 +41,38 @@
 
 ### 3.相册图片图像分类效果图
 #### 3.1 `mobilenet_v1`模型识别效果图
-<img src="image/mobilenet_v1.png" width = "500"  div align=center />
-<p align=center>图11 mobilenet_v1模型识别效果图<p>
+<img src="image/mobilenet_v1.png" width = "500"  div align=left />
+<p align=left>图12 mobilenet_v1模型识别效果图<p>
 
 #### 3.2 `mobilenet_v2`模型识别效果图
-<img src="image/mobilenet_v2.png" width = "500"  div align=center />
-<p align=center>图12 mobilenet_v2模型识别效果图<p>
+<img src="image/mobilenet_v2.png" width = "500"  div align=left />
+<p align=left>图13 mobilenet_v2模型识别效果图<p>
 
 
 ### 4.实时图像分类效果图
-<img src="image/tensorflow_classifier.png" width = "500"  div align=center />
-<p align=center>图13 实时图像分类效果图<p>
+<img src="image/tensorflow_classifier.png" width = "500"  div align=left />
+<p align=left>图14 实时图像分类效果图<p>
 
 
 ### 5.实时图像目标检测效果图
-<img src="image/tensorflow_detector.png" width = "500"  div align=center />
-<p align=center>图14 实时图像目标检测效果图<p>
+<img src="image/tensorflow_detector.png" width = "500"  div align=left />
+<p align=left>图15 实时图像目标检测效果图<p>
 
 
 ### 6.图像风格迁移效果图
 <table>
 	<tr>
-        <td ><center><img src="image/tensorflow_stylize_1.png" >图15 图像风格迁移效果图1</center></td>
-		<td ><center><img src="image/tensorflow_stylize_2.png" >图16 图像风格迁移效果图2</center></td>  
+        <td ><center><img src="image/tensorflow_stylize_1.png" >图16 图像风格迁移效果图1</center></td>
+		<td ><center><img src="image/tensorflow_stylize_2.png" >图17 图像风格迁移效果图2</center></td>  
     </tr>
 </table>
 
 ### 7.单词语音识别效果图
 <table>
 	<tr>
-        <td ><center><img src="image/tensorflow_speech.png" >图17 单词语音识别界面图</center></td>
-		<td ><center><img src="image/tensorflow_speech_yes.png" >图18 单词“Yes”语音识别效果图</center></td> 
-		<td ><center><img src="image/tensorflow_speech_no.png" >图19 单词“No”语音识别效果图</center></td> 		
+        <td ><center><img src="image/tensorflow_speech.png" >图18 单词语音识别界面图</center></td>
+		<td ><center><img src="image/tensorflow_speech_yes.png" >图19 单词“Yes”语音识别效果图</center></td> 
+		<td ><center><img src="image/tensorflow_speech_no.png" >图20 单词“No”语音识别效果图</center></td> 		
     </tr>
 </table>
 
