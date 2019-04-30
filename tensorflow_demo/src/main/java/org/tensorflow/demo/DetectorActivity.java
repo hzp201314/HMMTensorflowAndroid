@@ -198,7 +198,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
         //裁剪到帧转换 新建矩阵
         cropToFrameTransform = new Matrix();
-        //帧到裁剪转换矩阵 将裁剪到帧转换矩阵 转置 得到裁剪到帧转换矩阵
+        //帧到裁剪转换矩阵 将裁剪到帧转换矩阵 转置 得到帧到裁剪转换矩阵
         frameToCropTransform.invert( cropToFrameTransform );
 
         //跟踪覆盖视图
