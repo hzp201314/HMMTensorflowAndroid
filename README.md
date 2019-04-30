@@ -33,13 +33,14 @@
         <td ><center><img src="image/mnist_8.png" >图2-9 手写数字8</center></td>
 		<td ><center><img src="image/mnist_9.png" >图2-10 手写数字9</center></td>   
     </tr>
-
 </table>
 
 ### 3.相册图片图像分类效果图
 #### 3.1 `mobilenet_v1`模型识别效果图
-<img src="image/mobilenet_v1.png" width = "500" div align="center" />
-<p align=center>图3-1 mobilenet_v1模型识别效果图<p>
+<div align=center>
+	<img src="image/mobilenet_v1.png" width = "500" div align="center" />
+	<p align=center>图3-1 mobilenet_v1模型识别效果图<p>
+</div>
 
 #### 3.2 `mobilenet_v2`模型识别效果图
 <img src="image/mobilenet_v2.png" width = "500" div align=center />
