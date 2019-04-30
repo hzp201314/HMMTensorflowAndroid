@@ -74,6 +74,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.testtflite_activity_main );
 
         init_view();
+        //从本地文件读取缓存标签
         readCacheLabelFromLocalFile();
         // copy file from assets to sdcard
         String sdcard_path = Environment.getExternalStorageDirectory()
@@ -142,6 +143,7 @@ public class MainActivity extends BaseActivity {
 
     /**
      * Memory-map the model file in Assets.
+     * 加载模型
      */
     private MappedByteBuffer loadModelFile(String model) throws IOException {
         AssetFileDescriptor fileDescriptor = getApplicationContext().getAssets().openFd(model + ".tflite");
@@ -240,6 +242,9 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 从本地文件读取缓存标签
+     */
     private void readCacheLabelFromLocalFile() {
         try {
             AssetManager assetManager = getApplicationContext().getAssets();

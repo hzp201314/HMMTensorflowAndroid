@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         mDrawView.setOnTouchListener(this);
 
         detectButton = findViewById(R.id.buttonDetect);
+        //识别按钮
         detectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         });
 
+        //清除按钮
         View clearButton = findViewById(R.id.buttonClear);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         mResultText = (TextView) findViewById(R.id.textResult);
 
+        //初始化TF和模型
         initTensorFlowAndLoadModel();
     }
     private void initTensorFlowAndLoadModel() {
@@ -87,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             @Override
             public void run() {
                 try {
+                    //创建分类器
                     classifier = TensorFlowImageClassifier.create(
                             getAssets(),
                             MODEL_FILE,
@@ -94,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             INPUT_SIZE,
                             INPUT_NAME,
                             OUTPUT_NAME);
-                    makeButtonVisible();
+                    makeButtonVisible();//显示按钮
                     Log.d(TAG, "Load Success");
                 } catch (final Exception e) {
                     throw new RuntimeException("Error initializing TensorFlow!", e);
@@ -143,6 +147,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         return false;
     }
 
+    /**
+     * 开始触碰
+     * @param event
+     */
     private void processTouchDown(MotionEvent event) {
         mLastX = event.getX();
         mLastY = event.getY();
@@ -152,6 +160,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         mModel.startLine(lastConvX, lastConvY);
     }
 
+    /**
+     * 触摸移动
+     * @param event
+     */
     private void processTouchMove(MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
@@ -166,22 +178,32 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         mDrawView.invalidate();
     }
 
+    /**
+     * 结束触碰
+     */
     private void processTouchUp() {
         mModel.endLine();
     }
 
+    /**
+     * 识别按钮
+     */
     private void onDetectClicked() {
-        float pixels[] = mDrawView.getPixelData();
+        float pixels[] = mDrawView.getPixelData();//获取mDrawView的像素
 
+        //进行识别，结果放在分类器
         final List<Classifier.Recognition> results = classifier.recognizeImage(pixels);
 
         if (results.size() > 0) {
-            String value = " 识别结果 : " +results.get(0).getTitle();
+            String value = " 识别结果 : " +results.get(0).getTitle();//取最大的一个值
             mResultText.setText(value);
         }
 
     }
 
+    /**
+     * 清除画板
+     */
     private void onClearClicked() {
         mModel.clear();
         mDrawView.reset();

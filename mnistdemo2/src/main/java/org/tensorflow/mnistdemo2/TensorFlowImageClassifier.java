@@ -117,6 +117,11 @@ public class TensorFlowImageClassifier implements Classifier {
         return c;
     }
 
+    /**
+     * 识别图片
+     * @param pixels
+     * @return
+     */
     @Override
     public List<Recognition> recognizeImage(final float[] pixels) {
         // Log this method so that it can be analyzed with systrace.
@@ -137,6 +142,7 @@ public class TensorFlowImageClassifier implements Classifier {
         inferenceInterface.fetch(outputName, outputs);
         TraceCompat.endSection();
 
+        //找到最适合的类别
         // Find the best classifications.
         PriorityQueue<Recognition> pq =
                 new PriorityQueue<Recognition>(
@@ -148,6 +154,7 @@ public class TensorFlowImageClassifier implements Classifier {
                                 return Float.compare(rhs.getConfidence(), lhs.getConfidence());
                             }
                         });
+        //封装结果
         for (int i = 0; i < outputs.length; ++i) {
             if (outputs[i] > THRESHOLD) {
                 pq.add(

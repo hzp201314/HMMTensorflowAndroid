@@ -98,6 +98,12 @@ public class RecognizeCommands {
     }
   }
 
+  /**
+   * 处理最新结果
+   * @param currentResults
+   * @param currentTimeMS
+   * @return
+   */
   public RecognitionResult processLatestResults(float[] currentResults, long currentTimeMS) {
     if (currentResults.length != labelsCount) {
       throw new RuntimeException(
