@@ -12,8 +12,7 @@
 ## 应用效果图
 
 ### 1.APP主界面
-
-<img src="image/APPMainActivity.png" width = "500" align=center />
+<img src="image/APPMainActivity.png" width = "500" div align=center />
 <p align=center>图1 APP主界面效果图<p>
 
 ### 2.手写数字识别效果图
@@ -39,21 +38,21 @@
 
 ### 3.相册图片图像分类效果图
 #### 3.1 `mobilenet_v1`模型识别效果图
-<img src="image/mobilenet_v1.png" width = "500" align=center />
+<img src="image/mobilenet_v1.png" width = "500" div align="center" />
 <p align=center>图3-1 mobilenet_v1模型识别效果图<p>
 
 #### 3.2 `mobilenet_v2`模型识别效果图
-<img src="image/mobilenet_v2.png" width = "500" align=center />
+<img src="image/mobilenet_v2.png" width = "500" div align=center />
 <p align=center>图3-2 mobilenet_v2模型识别效果图<p>
 
 
 ### 4.实时图像分类效果图
-<img src="image/tensorflow_classifier.png" width = "500" align=center />
+<img src="image/tensorflow_classifier.png" width = "500" div align=center />
 <p align=center>图4 实时图像分类效果图<p>
 
 
 ### 5.实时图像目标检测效果图
-<img src="image/tensorflow_detector.png" width = "500" align=center />
+<img src="image/tensorflow_detector.png" width = "500" div align=center />
 <p align=center>图5 实时图像目标检测效果图<p>
 
 
