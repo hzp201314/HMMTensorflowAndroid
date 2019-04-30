@@ -32,9 +32,7 @@
     </tr>
 	<tr>
         <td ><center><img src="image/mnist_8.png" >图2-9 手写数字8</center></td>
-		<td ><center><img src="image/mnist_9.png" >图2-10 手写数字9</center></td>
-		<td ><center><img src="" ></center></td>
-		<td ><center><img src="" ></center></td>    
+		<td ><center><img src="image/mnist_9.png" >图2-10 手写数字9</center></td>   
     </tr>
 
 </table>
