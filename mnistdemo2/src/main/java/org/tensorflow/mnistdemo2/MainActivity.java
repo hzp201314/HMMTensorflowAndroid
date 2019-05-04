@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     private Classifier classifier;
     private Executor executor = Executors.newSingleThreadExecutor();
+//创建一个单线程化的线程池，它只会用唯一的工作线程来执行任务，保证所有任务按照指定顺序(FIFO, LIFO, 优先级)执行。
+
 
 
     @SuppressWarnings("SuspiciousNameCombination")
@@ -61,9 +63,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         mDrawView = (DrawView) findViewById(R.id.view_draw);
         mDrawView.setModel(mModel);
         mDrawView.setOnTouchListener(this);
-
-        detectButton = findViewById(R.id.buttonDetect);
+        
         //识别按钮
+        detectButton = findViewById(R.id.buttonDetect);
         detectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 onClearClicked();
             }
         });
-
+        //文本框用来存放结果
         mResultText = (TextView) findViewById(R.id.textResult);
 
         //初始化TF和模型
@@ -106,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         });
     }
-
+//点击识别按钮使识别结果可见
     private void makeButtonVisible() {
         runOnUiThread(new Runnable() {
             @Override
@@ -115,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         });
     }
-
+//手写数字
     @Override
     protected void onResume() {
         mDrawView.onResume();
@@ -127,20 +129,20 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         mDrawView.onPause();
         super.onPause();
     }
-
+//触摸事件
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         int action = event.getAction() & MotionEvent.ACTION_MASK;
 
-        if (action == MotionEvent.ACTION_DOWN) {
+        if (action == MotionEvent.ACTION_DOWN) {//如果手指按下
             processTouchDown(event);
             return true;
 
-        } else if (action == MotionEvent.ACTION_MOVE) {
+        } else if (action == MotionEvent.ACTION_MOVE) {//手指移动
             processTouchMove(event);
             return true;
 
-        } else if (action == MotionEvent.ACTION_UP) {
+        } else if (action == MotionEvent.ACTION_UP) {//手指抬起
             processTouchUp();
             return true;
         }
@@ -152,8 +154,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
      * @param event
      */
     private void processTouchDown(MotionEvent event) {
-        mLastX = event.getX();
-        mLastY = event.getY();
+        mLastX = event.getX(); //触摸点相对于其所在组件原点的x坐标
+        mLastY = event.getY();// 触摸点相对于其所在组件原点的y坐标
         mDrawView.calcPos(mLastX, mLastY, mTmpPoint);
         float lastConvX = mTmpPoint.x;
         float lastConvY = mTmpPoint.y;
